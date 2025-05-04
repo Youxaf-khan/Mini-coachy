@@ -10,18 +10,18 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      post 'login', to: 'authentication#login'
-      post 'register', to: 'authentication#register'
-      get 'me', to: 'authentication#me'
-      
+      post "login", to: "authentication#login"
+      post "register", to: "authentication#register"
+      get "me", to: "authentication#me"
+
       resources :users do
         collection do
-          get 'stats'
-          get 'recent_sessions'
-          get 'recent_users'
+          get "stats"
+          get "recent_sessions"
+          get "recent_users"
         end
       end
-      
+
       resources :sessions
     end
   end

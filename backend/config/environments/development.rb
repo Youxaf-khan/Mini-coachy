@@ -26,7 +26,7 @@ Rails.application.configure do
   # Configure cache store with fallback
   begin
     config.cache_store = :redis_cache_store, {
-      url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1'),
+      url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
       expires_in: 5.minutes
     }
   rescue Redis::CannotConnectError => e
@@ -78,5 +78,5 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 end

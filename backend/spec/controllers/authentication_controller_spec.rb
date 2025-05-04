@@ -39,7 +39,7 @@ RSpec.describe Api::V1::AuthenticationController, type: :controller do
         expect {
           post :register, params: valid_registration
         }.to change(User, :count).by(1)
-        
+
         expect(response).to have_http_status(:created)
         expect(json_response['token']).to be_present
         expect(json_response['user']['email']).to eq(valid_registration[:email])
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::AuthenticationController, type: :controller do
         token = JsonWebToken.encode(user_id: valid_user.id)
         request.headers['Authorization'] = "Bearer #{token}"
         get :me
-        
+
         expect(response).to have_http_status(:ok)
         expect(json_response['email']).to eq(valid_user.email)
       end
@@ -88,4 +88,4 @@ RSpec.describe Api::V1::AuthenticationController, type: :controller do
   def json_response
     JSON.parse(response.body)
   end
-end 
+end

@@ -1,7 +1,7 @@
 module Api
   module V1
     class AuthenticationController < ApplicationController
-      skip_before_action :authenticate_request, only: [:login, :register]
+      skip_before_action :authenticate_request, only: [ :login, :register ]
 
       # GET /api/v1/me
       def me
@@ -14,7 +14,7 @@ module Api
           token = JsonWebToken.encode(user_id: @user.id)
           render json: { token: token, user: @user.as_json(except: :password_digest) }, status: :ok
         else
-          render json: { error: 'Invalid credentials' }, status: :unauthorized
+          render json: { error: "Invalid credentials" }, status: :unauthorized
         end
       end
 
@@ -35,4 +35,4 @@ module Api
       end
     end
   end
-end 
+end

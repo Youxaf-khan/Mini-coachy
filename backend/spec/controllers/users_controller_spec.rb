@@ -97,7 +97,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     context 'when user is admin' do
       it 'deletes the user' do
         client
-        
+
         expect {
           delete :destroy, params: { id: client.id }
         }.to change(User, :count).by(-1)
@@ -198,4 +198,4 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   def json_response
     JSON.parse(response.body)
   end
-end 
+end

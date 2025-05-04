@@ -200,4 +200,4 @@ RSpec.describe Api::V1::SessionsController, type: :controller do
   def json_response
     JSON.parse(response.body)
   end
-end 
+end

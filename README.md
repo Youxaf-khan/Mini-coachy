@@ -5,7 +5,7 @@ A full-stack application for managing coaching sessions between coaches and clie
 ## Features
 
 - User authentication (JWT-based)
-- Role-based access control (Coach/Client)
+- Role-based access control (Coach/Client/Admin)
 - Session management
 - Real-time notifications
 - Email notifications
@@ -87,8 +87,6 @@ npm run lint
 - Secure password hashing
 - CORS configuration
 - Input validation
-- SQL injection prevention
-- XSS protection
 
 ## Caching Strategy
 

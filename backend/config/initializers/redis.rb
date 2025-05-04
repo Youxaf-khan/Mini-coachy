@@ -1,9 +1,9 @@
-require 'redis'
+require "redis"
 
 # Redis configuration
 begin
   redis_config = {
-    url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1'),
+    url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
     reconnect_attempts: 5
   }
@@ -26,4 +26,4 @@ rescue Redis::CannotConnectError => e
   Rails.logger.warn "Redis connection failed: #{e.message}. Running without Redis."
   # Fallback to memory store for caching
   Rails.application.config.cache_store = :memory_store
-end 
+end

@@ -1,5 +1,5 @@
 class SessionMailer < ApplicationMailer
-  ADMIN_EMAIL = 'admin@minicoachy.com'
+  ADMIN_EMAIL = "admin@minicoachy.com"
 
   def session_scheduled(session)
     @session = session
@@ -36,4 +36,4 @@ class SessionMailer < ApplicationMailer
       subject: "Reminder: Coaching session '#{session.title}' is coming up"
     )
   end
-end 
+end

@@ -25,4 +25,4 @@ class SessionPolicy
   def destroy?
     user.admin? || session.coach_id == user.id
   end
-end 
+end

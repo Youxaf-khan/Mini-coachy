@@ -65,11 +65,6 @@ rspec
 - `spec/` — RSpec tests (models, requests)
 - `config/` — Rails and environment configuration
 
-## Cleaned Up For Rails 7
-- Removed all Rails 8/Solid Queue/Kamal/Thruster code and config
-- Only essential gems and files are present
-- All tests use RSpec (no Minitest)
-
 ## Contributing
 1. Fork the repository
 2. Create your feature branch

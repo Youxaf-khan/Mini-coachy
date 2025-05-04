@@ -12,4 +12,4 @@ class JsonWebToken
   rescue
     nil
   end
-end 
+end

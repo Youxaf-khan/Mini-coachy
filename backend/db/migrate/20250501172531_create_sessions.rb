@@ -12,7 +12,7 @@ class CreateSessions < ActiveRecord::Migration[7.1]
       t.timestamps null: false
     end
 
-    add_index :sessions, [:coach_id, :start_time]
-    add_index :sessions, [:client_id, :start_time]
+    add_index :sessions, [ :coach_id, :start_time ]
+    add_index :sessions, [ :client_id, :start_time ]
   end
 end

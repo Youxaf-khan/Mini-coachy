@@ -12,4 +12,4 @@ module JsonWebToken
   rescue
     nil
   end
-end 
+end

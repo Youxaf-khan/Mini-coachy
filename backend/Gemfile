@@ -14,8 +14,8 @@ gem "bcrypt", "~> 3.1.7"
 gem "jwt"
 
 # Background Jobs and Caching
-gem 'sidekiq', '~> 7.0'
-gem 'redis', '~> 5.0'
+gem "sidekiq", "~> 7.0"
+gem "redis", "~> 5.0"
 
 # Authorization
 gem "pundit"
@@ -44,7 +44,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem 'database_cleaner-active_record', '~> 2.0'
+  gem "database_cleaner-active_record", "~> 2.0"
 
   # Testing
   gem "rspec-rails"
