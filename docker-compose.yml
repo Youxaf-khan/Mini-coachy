@@ -1,6 +1,59 @@
 version: '3.8'
 
+x-backend: &backend
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+  environment:
+    RAILS_ENV: production
+    RAILS_LOG_TO_STDOUT: "true"
+    RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+    DATABASE_URL: postgres://postgres:postgres@postgres:5432/mini_coachy_production
+    REDIS_URL: redis://redis:6379/1
+  restart: on-failure:3
+  stdin_open: true
+  tty: true
+  volumes:
+    - ./backend:/rails
+    - bundle_cache:/usr/local/bundle
+
 services:
+  backend:
+    <<: *backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    command: bash -c "bundle exec rails db:migrate && bundle exec puma -C config/puma.rb"
+      # Only backend runs migrations, then starts the server
+
+  sidekiq:
+    <<: *backend
+    command: bundle exec sidekiq
+    depends_on:
+      - postgres
+      - redis
+      - backend
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mini_coachy_production
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   frontend:
     build:
       context: ./frontend
@@ -9,78 +62,8 @@ services:
       - "80:80"
     depends_on:
       - backend
-    networks:
-      - app-network
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - RAILS_ENV=production
-      - RAILS_LOG_TO_STDOUT=true
-      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/coaching_app_production
-      - REDIS_URL=redis://redis:6379/1
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./backend:/rails
-      - bundle_cache:/usr/local/bundle
-    command: ./bin/rails server -b 0.0.0.0
-    networks:
-      - app-network
-
-  postgres:
-    image: postgres:15
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=coaching_app_production
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-  redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - app-network
-
-  sidekiq:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    environment:
-      - RAILS_ENV=production
-      - RAILS_LOG_TO_STDOUT=true
-      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/coaching_app_production
-      - REDIS_URL=redis://redis:6379/1
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./backend:/rails
-      - bundle_cache:/usr/local/bundle
-    command: bundle exec sidekiq
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
   redis_data:
   bundle_cache:
-
-networks:
-  app-network:
-    driver: bridge 
