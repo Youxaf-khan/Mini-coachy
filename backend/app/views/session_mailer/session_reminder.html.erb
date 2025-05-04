@@ -1,0 +1,10 @@
+<h2>Reminder: Your session is coming up soon!</h2>
+<p>
+  <strong>Title:</strong> <%= @session.title %><br>
+  <strong>Coach:</strong> <%= @session.coach.name %><br>
+  <strong>Start Time:</strong> <%= @session.start_time.strftime('%A, %d %B %Y at %I:%M %p') %><br>
+  <strong>End Time:</strong> <%= @session.end_time.strftime('%A, %d %B %Y at %I:%M %p') %>
+</p>
+<p>
+  Please be ready for your session.
+</p> 

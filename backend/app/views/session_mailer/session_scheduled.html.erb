@@ -1,0 +1,9 @@
+<h2>Your session has been scheduled!</h2>
+<p>
+  <strong>Title:</strong> <%= @session.title %><br>
+  <strong>Coach:</strong> <%= @session.coach.name %><br>
+  <strong>Start Time:</strong> <%= @session.start_time.strftime('%A, %d %B %Y at %I:%M %p') %><br>
+  <strong>End Time:</strong> <%= @session.end_time.strftime('%A, %d %B %Y at %I:%M %p') %>
+</p>
+<p>
+  We look forward to seeing you! 

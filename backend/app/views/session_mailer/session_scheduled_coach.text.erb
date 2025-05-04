@@ -1,0 +1,8 @@
+You have a new coaching session scheduled!
+
+Title: <%= @session.title %>
+Client: <%= @session.client.name %>
+Start Time: <%= @session.start_time.strftime('%A, %d %B %Y at %I:%M %p') %>
+End Time: <%= @session.end_time.strftime('%A, %d %B %Y at %I:%M %p') %>
+
+Please prepare for your session. 
