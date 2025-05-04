@@ -11,8 +11,6 @@ x-backend: &backend
     DATABASE_URL: postgres://postgres:postgres@postgres:5432/mini_coachy_production
     REDIS_URL: redis://redis:6379/1
   restart: on-failure:3
-  stdin_open: true
-  tty: true
   volumes:
     - ./backend:/rails
     - bundle_cache:/usr/local/bundle
