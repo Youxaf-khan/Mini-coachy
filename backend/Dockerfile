@@ -31,4 +31,4 @@ ENV RAILS_ENV=development
 EXPOSE 3000
 
 # Start the Rails server and Sidekiq processes
-CMD ["sh", "-c", "bundle exec rails s -b '0.0.0.0' && bundle exec sidekiq"]
+# CMD ["sh", "-c", "bundle exec rails s -b '0.0.0.0' && bundle exec sidekiq"]

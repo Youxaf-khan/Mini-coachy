@@ -51,10 +51,15 @@ npm install
 npm start
 ```
 
-### Redis & Sidekiq Setup
+### Docker setup
 ```bash
-docker-compose up -d
+docker compose build --no-cache
+docker compose up
 ```
+- Access frontend on localhost:80
+- Admin role:
+- Email: adminomar@example.com
+- password: password123
 
 ## Development
 
