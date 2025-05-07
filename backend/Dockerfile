@@ -1,51 +1,34 @@
-# syntax=docker/dockerfile:1
-# check=error=true
+# Use the official Ruby image as the base image
+FROM ruby:3.2.2-slim
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t backend .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name backend backend
+# Install required dependencies
+RUN apt-get update -qq && apt-get install -y \
+  build-essential \
+  libpq-dev \
+  nodejs \
+  redis-server \
+  && rm -rf /var/lib/apt/lists/*
 
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+# Set the working directory for the container
+WORKDIR /app
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.2.2
-FROM ruby:$RUBY_VERSION-slim
+# Install Bundler
+RUN gem install bundler -v 2.5.22
 
-# Set working directory
-WORKDIR /rails
+# Copy the Gemfile and Gemfile.lock to install gems
+COPY backend/Gemfile backend/Gemfile.lock ./
 
-# Install system dependencies
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-    build-essential \
-    libpq-dev \
-    nodejs \
-    yarn \
-    curl \
-    libvips \
-    postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+# Install the required Ruby gems
+RUN bundle install
 
-# Install gems
-COPY Gemfile Gemfile.lock ./
-RUN gem install bundler:2.5.22 && bundle install --jobs 4 --retry 3
+# Copy the backend application code into the container
+COPY backend ./
 
-# Copy the rest of the app
-COPY . .
+# Set the environment variable to development
+ENV RAILS_ENV=development
 
-# Ensure the entrypoint script is executable
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-
-# Set environment variables
-ENV RAILS_ENV=production \
-    RAILS_LOG_TO_STDOUT=true \
-    BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_WITHOUT="development:test"
-
-# Expose port 3000 (default for Rails)
+# Expose port 3000 for the Rails API
 EXPOSE 3000
 
-# Use the entrypoint script to run migrations, then start the server
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+# Start the Rails server and Sidekiq processes
+CMD ["sh", "-c", "bundle exec rails s -b '0.0.0.0' && bundle exec sidekiq"]

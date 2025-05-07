@@ -1,61 +1,44 @@
 version: '3.8'
 
-x-backend: &backend
-  build:
-    context: ./backend
-    dockerfile: Dockerfile
-  environment:
-    RAILS_ENV: production
-    RAILS_LOG_TO_STDOUT: "true"
-    RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-    DATABASE_URL: postgres://postgres:postgres@postgres:5432/mini_coachy_production
-    REDIS_URL: redis://redis:6379/1
-  restart: on-failure:3
-  volumes:
-    - ./backend:/rails
-    - bundle_cache:/usr/local/bundle
-
 services:
   backend:
-    <<: *backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: bash -c "rm -f /app/tmp/pids/server.pid && bundle exec rake db:migrate && bundle exec rails s -b '0.0.0.0' && bundle exec sidekiq"
+    volumes:
+      - ./backend:/app
     ports:
       - "3000:3000"
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/mini_coachy_development
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - postgres
       - redis
-    command: bash -c "bundle exec rails db:migrate && bundle exec puma -C config/puma.rb"
-      # Only backend runs migrations, then starts the server
 
-  sidekiq:
-    <<: *backend
-    command: bundle exec sidekiq
-    depends_on:
-      - postgres
-      - redis
-      - backend
-
+  # PostgreSQL service
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      POSTGRES_DB: mini_coachy_production
-    ports:
-      - "5433:5432"
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mini_coachy_development
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
+  # Redis service
   redis:
-    image: redis:7
+    image: redis:latest
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
@@ -63,5 +46,3 @@ services:
 
 volumes:
   postgres_data:
-  redis_data:
-  bundle_cache:
